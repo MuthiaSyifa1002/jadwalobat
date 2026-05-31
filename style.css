@@ -1,6 +1,5 @@
 body {
     font-family: 'Poppins', sans-serif;
-    background-color: #F3EDE6;
 }
 
 input[type="radio"]:checked + span {
@@ -21,8 +20,4 @@ label:has(input[type="radio"]:checked) {
 button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
-}
-
-input[type="file"]::file-selector-button {
-    cursor: pointer;
 }
