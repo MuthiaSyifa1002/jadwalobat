@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedRemind AI</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="text-gray-800 min-h-screen pb-12 antialiased">
+
+    <nav class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center space-x-3">
+                    <div class="w-9 h-9 rounded-full bg-[#7A1E2C] flex items-center justify-center text-white">
+                        <i class="fa-solid fa-pills text-sm transform -rotate-45"></i>
+                    </div>
+                    <span class="text-xl font-bold tracking-tight text-[#7A1E2C]">MedRemind AI</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="relative p-2 text-gray-400 hover:text-[#7A1E2C] transition-colors rounded-xl">
+                        <i class="fa-regular fa-bell text-xl"></i>
+                        <span id="notif-badge" class="absolute top-2.5 right-2.5 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white hidden"></span>
+                    </button>
+                    <div class="flex items-center space-x-2.5 bg-[#F3EDE6]/80 py-1.5 px-3.5 rounded-full border border-gray-200">
+                        <div class="w-7 h-7 rounded-full bg-[#7A1E2C] text-white flex items-center justify-center text-xs font-semibold">
+                            M
+                        </div>
+                        <span class="text-sm font-medium text-gray-700 hidden sm:inline">Muthia</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 space-y-8">
+        
+        <section class="space-y-6">
+            <div>
+                <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-[#7A1E2C]">Halo, Muthia! 👋</h1>
+                <p class="text-gray-500 text-sm mt-1">Selamat datang di MedRemind AI. Kelola resep dan pantau metrik kesehatan Anda menggunakan analitik pintar Machine Learning.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-[#7A1E2C] text-white p-6 rounded-2xl shadow-md flex flex-col justify-between min-h-[145px]">
+                    <div class="flex items-center space-x-3 opacity-90">
+                        <div class="p-2 bg-white/10 rounded-lg">
+                            <i class="fa-solid fa-prescription-bottle-medical text-base"></i>
+                        </div>
+                        <span class="font-medium text-sm tracking-wide">Obat Aktif</span>
+                    </div>
+                    <div class="mt-4">
+                        <h2 id="kpi-obat" class="text-3xl font-bold tracking-tight">0 Obat</h2>
+                        <p class="text-xs text-amber-200/90 font-light mt-1">Sistem siap memproses resep medis Anda</p>
+                    </div>
+                </div>
+                
+                <div class="bg-white p-6 rounded-2xl border border-gray-200/60 shadow-xs flex flex-col justify-between min-h-[145px]">
+                    <div class="flex items-center space-x-3 text-gray-500">
+                        <div class="p-2 bg-[#F3EDE6] text-[#7A1E2C] rounded-lg">
+                            <i class="fa-solid fa-chart-line text-base"></i>
+                        </div>
+                        <span class="font-medium text-sm text-gray-600">Kepatuhan Minggu Ini</span>
+                    </div>
+                    <div class="mt-4">
+                        <h2 id="kpi-kepatuhan" class="text-3xl font-bold tracking-tight text-gray-400">-- %</h2>
+                        <p id="kpi-kepatuhan-sub" class="text-xs text-gray-400 font-medium mt-1">Belum ada data interaksi minum obat</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="section-mitigasi" class="bg-amber-50 border border-amber-200 rounded-2xl p-5 space-y-3 hidden">
+            <div class="flex items-center space-x-2.5 text-amber-800">
+                <i class="fa-solid fa-triangle-exclamation text-lg animate-pulse"></i>
+                <h4 class="font-bold text-sm tracking-tight">Peringatan Keterlambatan & Rekomendasi Medis MedRemind AI</h4>
+            </div>
+            <div class="bg-white rounded-xl p-4 border border-amber-100 space-y-2">
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Instruksi Tindakan Kerja</p>
+                <p id="teks-mitigasi" class="text-sm text-gray-700 leading-relaxed"></p>
+            </div>
+            <div class="flex justify-end space-x-3 pt-1">
+                <button id="btn-abaikan-mitigasi" class="px-4 py-2 rounded-xl text-xs font-medium text-amber-700 hover:bg-amber-100 transition-colors cursor-pointer">Abaikan</button>
+                <button id="btn-konfirmasi-mitigasi" class="px-4 py-2 rounded-xl bg-amber-700 text-white text-xs font-medium hover:bg-amber-800 transition-colors shadow-2xs cursor-pointer">Minum Sekarang</button>
+            </div>
+        </section>
+
+        <section class="space-y-4">
+            <h3 class="text-lg font-semibold tracking-tight text-gray-800">Pusat Analisis & Manajemen Resep</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-4 gap-5">
+                
+                <button id="btn-manual" class="bg-white p-5 rounded-2xl border border-gray-100 shadow-xs hover:border-[#7A1E2C] hover:shadow-md group transition-all text-center flex flex-col items-center justify-center space-y-3 cursor-pointer">
+                    <div class="w-12 h-12 bg-[#7A1E2C] text-white rounded-2xl flex items-center justify-center text-lg transition-transform group-hover:scale-105">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                    </div>
+                    <div class="space-y-1">
+                        <span class="block font-semibold text-sm text-gray-900 group-hover:text-[#7A1E2C] transition-colors">Input Resep Manual</span>
+                        <p class="text-[11px] text-gray-400 max-w-[180px] mx-auto leading-normal">Ketik entitas resep obat secara mandiri dari awal</p>
+                    </div>
+                </button>
+
+                <button id="btn-fitur-efeksamping" class="bg-white p-5 rounded-2xl border border-gray-100 shadow-xs hover:border-amber-600 hover:shadow-md group transition-all text-center flex flex-col items-center justify-center space-y-3 cursor-pointer">
+                    <div class="w-12 h-12 bg-amber-600 text-white rounded-2xl flex items-center justify-center text-lg transition-transform group-hover:scale-105">
+                        <i class="fa-solid fa-shield-virus"></i>
+                    </div>
+                    <div class="space-y-1">
+                        <span class="block font-semibold text-sm text-gray-900 group-hover:text-amber-600 transition-colors">Cek Risiko Efek Samping</span>
+                        <p class="text-[11px] text-gray-400 max-w-[180px] mx-auto leading-normal">Prediksi probabilitas gejala klinis lewat Decision Tree Classifier</p>
+                    </div>
+                </button>
+
+                <button id="btn-fitur-jadwalpintar" class="bg-white p-5 rounded-2xl border border-gray-100 shadow-xs hover:border-indigo-600 hover:shadow-md group transition-all text-center flex flex-col items-center justify-center space-y-3 cursor-pointer">
+                    <div class="w-12 h-12 bg-indigo-600 text-white rounded-2xl flex items-center justify-center text-lg transition-transform group-hover:scale-105">
+                        <i class="fa-solid fa-calendar-check"></i>
+                    </div>
+                    <div class="space-y-1">
+                        <span class="block font-semibold text-sm text-gray-900 group-hover:text-indigo-600 transition-colors">Optimasi Jadwal Pintar</span>
+                        <p class="text-[11px] text-gray-400 max-w-[180px] mx-auto leading-normal">Klasterisasi waktu minum optimal berbasis rutinitas K-Means</p>
+                    </div>
+                </button>
+
+                <button id="btn-fitur-tren" class="bg-white p-5 rounded-2xl border border-gray-100 shadow-xs hover:border-emerald-600 hover:shadow-md group transition-all text-center flex flex-col items-center justify-center space-y-3 cursor-pointer">
+                    <div class="w-12 h-12 bg-emerald-600 text-white rounded-2xl flex items-center justify-center text-lg transition-transform group-hover:scale-105">
+                        <i class="fa-solid fa-chart-line"></i>
+                    </div>
+                    <div class="space-y-1">
+                        <span class="block font-semibold text-sm text-gray-900 group-hover:text-emerald-600 transition-colors">Prediksi Tren Kesembuhan</span>
+                        <p class="text-[11px] text-gray-400 max-w-[180px] mx-auto leading-normal">Kalkulasi proyeksi pemulihan log harian via Linear Regression</p>
+                    </div>
+                </button>
+            </div>
+        </section>
+
+        <section id="section-form" class="bg-white p-6 rounded-2xl border border-gray-200/60 shadow-xs space-y-6 hidden">
+            <div class="border-b border-gray-100 pb-3 flex justify-between items-center text-[#7A1E2C]">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-pen-to-square" id="icon-form-status"></i>
+                    <h3 id="judul-form-resep" class="font-semibold text-gray-800 tracking-tight">Form Input Manual Resep Obat</h3>
+                </div>
+            </div>
+            <form id="form-resep" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Nama Obat</label>
+                    <input type="text" id="nama-obat" required class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-hidden focus:border-[#7A1E2C] focus:ring-1 focus:ring-[#7A1E2C] transition-all bg-gray-50/50">
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Dosis</label>
+                    <input type="text" id="dosis-obat" required class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-hidden focus:border-[#7A1E2C] focus:ring-1 focus:ring-[#7A1E2C] transition-all bg-gray-50/50">
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Frekuensi Konsumsi</label>
+                    <select id="frekuensi-obat" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-hidden focus:border-[#7A1E2C] focus:ring-1 focus:ring-[#7A1E2C] transition-all bg-white">
+                        <option value="1">1 Kali Sehari</option>
+                        <option value="2">2 Kali Sehari</option>
+                        <option value="3">3 Kali Sehari</option>
+                    </select>
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Aturan Makan</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <label class="border border-gray-200 rounded-xl p-3 flex items-center justify-center space-x-2 cursor-pointer transition-all hover:bg-gray-50 select-none">
+                            <input type="radio" name="aturan-makan" id="radio-sebelum" value="Sebelum" checked class="accent-[#7A1E2C]">
+                            <span class="text-sm font-medium text-gray-700">Sebelum Makan</span>
+                        </label>
+                        <label class="border border-gray-200 rounded-xl p-3 flex items-center justify-center space-x-2 cursor-pointer transition-all hover:bg-gray-50 select-none">
+                            <input type="radio" name="aturan-makan" id="radio-sesudah" value="Sesudah" class="accent-[#7A1E2C]">
+                            <span class="text-sm font-medium text-gray-700">Sesudah Makan</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="md:col-span-2 pt-2 flex justify-end space-x-3">
+                    <button type="button" id="btn-batal" class="px-5 py-2.5 rounded-xl border border-gray-200 text-sm font-semibold text-gray-600 hover:bg-gray-50 cursor-pointer">Batal</button>
+                    <button type="submit" class="px-5 py-2.5 rounded-xl bg-[#7A1E2C] text-white text-sm font-semibold hover:bg-[#611622] transition-colors shadow-xs cursor-pointer">Simpan & Aktifkan Pemantauan</button>
+                </div>
+            </form>
+        </section>
+
+        <section id="section-ml-panel" class="bg-white p-6 rounded-2xl border border-gray-200/60 shadow-xs space-y-4 hidden">
+            <div class="border-b border-gray-100 pb-3 flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <i id="ml-panel-icon" class="text-lg"></i>
+                    <h3 id="ml-panel-title" class="font-semibold text-gray-800 tracking-tight"></h3>
+                </div>
+                <button id="btn-tutup-ml" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="ml-panel-loading" class="py-6 text-center text-sm text-gray-500 space-y-2">
+                <i class="fa-solid fa-spinner animate-spin text-xl block text-gray-400"></i>
+                <p id="ml-loading-text">Menjalankan komputasi algoritma klasik...</p>
+            </div>
+            <div id="ml-panel-content" class="hidden space-y-4"></div>
+        </section>
+
+        <section class="bg-white p-6 rounded-2xl border border-gray-200/60 shadow-xs space-y-4">
+            <h3 class="font-semibold text-gray-800 tracking-tight">Tanya Kabar Harian</h3>
+            <div class="p-4 bg-[#F3EDE6]/40 rounded-xl border border-gray-100 space-y-4">
+                <p class="text-sm font-medium text-gray-700">Bagaimana kondisi kesehatan Anda hari ini setelah minum obat?</p>
+                <div class="grid grid-cols-2 sm:flex sm:space-x-4 gap-3" id="wrapper-emoticon">
+                    <button data-status="4" class="flex-1 py-3 px-4 bg-white border border-gray-200 rounded-xl flex flex-col sm:flex-row items-center justify-center space-y-1 sm:space-y-0 sm:space-x-2 hover:border-[#7A1E2C] hover:bg-[#7A1E2C]/5 transition-all cursor-pointer opacity-50 pointer-events-none" id="emo-1">
+                        <span class="text-2xl">😊</span>
+                        <span class="text-xs font-medium text-gray-600">Bugar</span>
+                    </button>
+                    <button data-status="3" class="flex-1 py-3 px-4 bg-white border border-gray-200 rounded-xl flex flex-col sm:flex-row items-center justify-center space-y-1 sm:space-y-0 sm:space-x-2 hover:border-[#7A1E2C] hover:bg-[#7A1E2C]/5 transition-all cursor-pointer opacity-50 pointer-events-none" id="emo-2">
+                        <span class="text-2xl">😐</span>
+                        <span class="text-xs font-medium text-gray-600">Biasa</span>
+                    </button>
+                    <button data-status="2" class="flex-1 py-3 px-4 bg-white border border-gray-200 rounded-xl flex flex-col sm:flex-row items-center justify-center space-y-1 sm:space-y-0 sm:space-x-2 hover:border-[#7A1E2C] hover:bg-[#7A1E2C]/5 transition-all cursor-pointer opacity-50 pointer-events-none" id="emo-3">
+                        <span class="text-2xl">🤢</span>
+                        <span class="text-xs font-medium text-gray-600">Mual</span>
+                    </button>
+                    <button data-status="1" class="flex-1 py-3 px-4 bg-white border border-gray-200 rounded-xl flex flex-col sm:flex-row items-center justify-center space-y-1 sm:space-y-0 sm:space-x-2 hover:border-[#7A1E2C] hover:bg-[#7A1E2C]/5 transition-all cursor-pointer opacity-50 pointer-events-none" id="emo-4">
+                        <span class="text-2xl">🤮</span>
+                        <span class="text-xs font-medium text-gray-600">Pusing</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="bg-white p-6 rounded-2xl border border-gray-200/60 shadow-xs space-y-4 flex flex-col justify-between">
+                <h3 class="font-semibold text-gray-800 tracking-tight">Kepatuhan Minum Obat (7 Hari)</h3>
+                <div class="w-full relative px-2">
+                    <canvas id="barChartKepatuhan" class="max-h-52 w-full"></canvas>
+                </div>
+                <div class="flex flex-wrap gap-4 pt-2 border-t border-gray-100 text-xs text-gray-500 font-medium">
+                    <div class="flex items-center space-x-1.5"><span class="w-3 h-3 bg-[#7A1E2C] rounded-sm"></span><span>100%</span></div>
+                    <div class="flex items-center space-x-1.5"><span class="w-3 h-3 bg-[#b25363] rounded-sm"></span><span>75-99%</span></div>
+                    <div class="flex items-center space-x-1.5"><span class="w-3 h-3 bg-[#e0919d] rounded-sm"></span><span>50-74%</span></div>
+                    <div class="flex items-center space-x-1.5"><span class="w-3 h-3 bg-[#f0cbd1] rounded-sm"></span><span>&lt;50%</span></div>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-2xl border border-gray-200/60 shadow-xs space-y-4 flex flex-col justify-between">
+                <h3 class="font-semibold text-gray-800 tracking-tight">Kondisi Kesehatan (30 Hari)</h3>
+                <div class="w-full relative px-2">
+                    <canvas id="lineChartGejala" class="max-h-52 w-full"></canvas>
+                </div>
+                <div class="bg-[#F3EDE6]/60 p-3.5 rounded-xl grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-gray-600 border border-gray-200/40">
+                    <div class="space-y-0.5">
+                        <span class="font-semibold text-gray-900 flex items-center"><span class="w-1.5 h-1.5 bg-[#7A1E2C] rounded-full mr-1.5"></span>Kondisi Kesehatan:</span>
+                        <p class="text-[11px] text-gray-500 pl-3">4=Sangat Baik, 3=Cukup Baik, 2=Kurang Baik, 1=Tidak Baik</p>
+                    </div>
+                    <div class="space-y-0.5">
+                        <span class="font-semibold text-gray-900 flex items-center"><span class="w-1.5 h-1.5 bg-rose-400 rounded-full mr-1.5"></span>Tingkat Gejala:</span>
+                        <p class="text-[11px] text-gray-500 pl-3">4=Tidak Ada, 3=Ringan, 2=Sedang, 1=Berat</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-white p-6 rounded-2xl border border-gray-200/60 shadow-xs space-y-5">
+            <div class="flex justify-between items-center">
+                <h3 class="font-semibold text-gray-800 tracking-tight">Jadwal & Riwayat Log Medis</h3>
+                <button id="btn-lihat-semua" class="text-sm font-semibold text-[#7A1E2C] hover:text-[#5c131f] hover:underline transition-colors cursor-pointer">Lihat Semua</button>
+            </div>
+            
+            <div id="container-log" class="space-y-3.5">
+                <div id="log-kosong" class="text-center py-8 text-gray-400 text-sm border-2 border-dashed border-gray-200 rounded-xl">
+                    <i class="fa-solid fa-folder-open text-2xl block mb-2 text-gray-300"></i>
+                    Belum ada jadwal obat terpantau. Silakan input resep di atas.
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="modal-semua-log" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 hidden backdrop-blur-xs p-4">
+        <div class="bg-white w-full max-w-2xl rounded-2xl shadow-xl flex flex-col max-h-[85vh]">
+            <div class="p-5 border-b border-gray-100 flex justify-between items-center">
+                <h3 class="font-bold text-lg text-gray-900 tracking-tight">Riwayat dan Log Aktivitas Medis</h3>
+                <button id="btn-close-modal" class="p-2 text-gray-400 hover:text-gray-600 rounded-xl transition-colors cursor-pointer">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <div id="container-modal-list" class="p-5 overflow-y-auto space-y-3 flex-1 bg-gray-50/50">
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
